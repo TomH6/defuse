@@ -2,9 +2,13 @@
 
 A daily logic puzzle. A bomb has 4 wires, each with a tag. The bomb tells you how many tags are lying — work out which wire is safe and cut it. One cut, two minutes, no second chances.
 
-- Same bomb for everyone each day (generated from the date)
-- Every bomb is checked to have exactly one correct answer
-- Unlimited practice bombs
-- Streaks and a copy-to-WhatsApp result
+Play: https://tomh6.github.io/defuse
 
-Plain HTML/JS, no build step. Hosted on GitHub Pages.
+- Same bomb for everyone each day (generated from the date); every bomb has exactly one correct answer
+- English / Hebrew (same daily bomb in both)
+- Daily leaderboard + private friend groups (join by link)
+- WhatsApp challenge links with head-to-head results
+- Optional sound and vibration
+- Installable (PWA), works offline
+
+Plain HTML/JS, no build step. Hosted on GitHub Pages. Leaderboard uses the Trivia Deck Firebase Realtime Database under `/defuse` — rules in `database.rules.json` (paste the whole file into Firebase → Realtime Database → Rules).
