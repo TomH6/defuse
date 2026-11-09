@@ -129,9 +129,9 @@ input:focus{outline:none;border-color:var(--cyan);box-shadow:0 0 0 2px #22e5ff33
 .set.col .muted{text-align:start;line-height:1.5}
 .tog{background:#0a1316;border:1px solid var(--line);color:var(--muted);border-radius:6px;padding:8px 14px;font-family:inherit;font-size:13px;letter-spacing:.1em;cursor:pointer;min-width:70px}
 .tog.on{color:var(--green);border-color:var(--green);box-shadow:0 0 10px #39ff9c33}
-.seg{flex:none;display:flex;border:1px solid var(--line);border-radius:6px;overflow:hidden}
-.seg button{background:#0a1316;border:0;color:var(--muted);padding:8px 12px;font-family:inherit;font-size:14px;cursor:pointer}
-.seg button.on{background:#22e5ff22;color:var(--cyan)}
+.langsw{flex:none;display:flex;border:1px solid var(--line);border-radius:6px;overflow:hidden}
+.langsw button{background:#0a1316;border:0;color:var(--muted);padding:8px 12px;font-family:inherit;font-size:14px;cursor:pointer}
+.langsw button.on{background:#22e5ff22;color:var(--cyan)}
 #modal{position:fixed;inset:0;background:#000b;display:none;align-items:flex-end;justify-content:center;z-index:20}
 #modal.open{display:flex}
 .sheet{width:100%;max-width:460px;background:#0e171b;border:1px solid #22e5ff55;border-radius:14px 14px 0 0;padding:18px 16px calc(18px + env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:12px}

@@ -1,6 +1,5 @@
 import { makePuzzle } from './puzzle.js';
 import { t, setLang, LANG, colorName, stmtText } from './i18n.js';
-import { sfx, fx, unlock } from './sound.js';
 import * as net from './net.js';
 
 const SITE='https://tomh6.github.io/defuse/';
@@ -14,12 +13,11 @@ const fmt=s=>`${Math.floor(s/60)}:${String(Math.floor(s%60)).padStart(2,'0')}`;
 
 /* ---------- settings ---------- */
 setLang(store.get('defuse-lang')||'en');
-Object.assign(fx,store.get('defuse-fx')||{});
 const myName=()=>store.get('defuse-name')||'';
 const myGroups=()=>store.get('defuse-groups')||[];
 
 /* ---------- state ---------- */
-let G=null,timerId=null,view='game',boardTab='today',lastSec=null,installEvt=null,newGroupOpen=false;
+let G=null,timerId=null,view='game',boardTab='today',installEvt=null,newGroupOpen=false;
 window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();installEvt=e});
 
 const params=new URLSearchParams(location.search);
@@ -45,25 +43,23 @@ function newGame(mode){
   if(G.phase==='won'||G.phase==='lost')afterGame();
 }
 function start(){
-  unlock();sfx.start();
   G.phase='playing';G.t0=Date.now();
   if(G.mode==='daily')store.set('defuse-started',{date:G.date,t0:G.t0});
   runClock();render();
 }
-function runClock(){lastSec=null;clearInterval(timerId);timerId=setInterval(tick,100);setTimeout(tick,0)}
+function runClock(){clearInterval(timerId);timerId=setInterval(tick,100);setTimeout(tick,0)}
 const left=()=>Math.max(0,G.limit-(Date.now()-G.t0)/1000);
 function tick(){
   if(G.phase!=='playing')return;
   const l=left(),sec=Math.ceil(l),el=$('#timer');
   if(el){el.textContent=fmt(sec);el.classList.toggle('low',l<=20)}
-  if(sec!==lastSec){if(lastSec!==null&&sec>0)sfx.tick(sec<=10);lastSec=sec}
   if(l<=0)finish(false,'time');
 }
-function select(i){if(G.phase!=='playing')return;G.sel=i;sfx.select();render()}
+function select(i){if(G.phase!=='playing')return;G.sel=i;render()}
 function cut(){
   if(G.phase!=='playing'||G.sel===null)return;
   const i=G.sel;G.phase='cutting';G.cutIdx=i;clearInterval(timerId);
-  G.used=(Date.now()-G.t0)/1000;sfx.snip();
+  G.used=(Date.now()-G.t0)/1000;
   const w=document.querySelector(`.wire[data-i="${i}"]`);
   if(w){w.classList.remove('sel');w.classList.add('cut');const m=w.querySelector('.mark');if(m)m.remove()}
   const b=$('#cutBtn');if(b){b.disabled=true;b.textContent='✂ ✂ ✂'}
@@ -84,7 +80,6 @@ function finish(won,reason){
     else{st.streak=0;st.last=G.date}
     store.set('defuse-stats',st);
   }
-  won?sfx.win():sfx.boom();
   render();
   if(!won){const f=$('#flash');f.classList.remove('go');void f.offsetWidth;f.classList.add('go');const b=$('.bomb');if(b)b.classList.add('shake')}
   afterGame();
@@ -270,18 +265,13 @@ function renderSettings(){
   const standalone=matchMedia('(display-mode: standalone)').matches||navigator.standalone;
   return`<div class="panel">
     <div class="ptitle">⚙ ${t('settings')}</div>
-    <div class="set"><span>${t('lang')}</span><div class="seg"><button class="${LANG==='en'?'on':''}" data-lang="en">English</button><button class="${LANG==='he'?'on':''}" data-lang="he">עברית</button></div></div>
-    <div class="set"><span>🔊 ${t('sound')}</span>${tog('tSound',fx.sound)}</div>
-    <div class="set"><span>📳 ${t('vibrate')}</span>${tog('tVib',fx.vibrate)}</div>
+    <div class="set"><span>${t('lang')}</span><div class="langsw"><button class="${LANG==='en'?'on':''}" data-lang="en">English</button><button class="${LANG==='he'?'on':''}" data-lang="he">עברית</button></div></div>
     <div class="set"><span>${t('name')}</span><button class="tog" id="editName">${esc(myName())||'—'} ✎</button></div>
     ${standalone?'':`<div class="set col"><span>📲 ${t('install')}</span>${installEvt?`<button class="btn go" id="doInstall">${t('installBtn')}</button>`:`<div class="muted">${t('installHow')}</div>`}</div>`}
   </div>`;
 }
 function bindSettings(){
   document.querySelectorAll('[data-lang]').forEach(b=>b.onclick=()=>{setLang(b.dataset.lang);store.set('defuse-lang',LANG);render()});
-  const save=()=>store.set('defuse-fx',{sound:fx.sound,vibrate:fx.vibrate});
-  $('#tSound').onclick=()=>{fx.sound=!fx.sound;save();if(fx.sound){unlock();sfx.select()}render()};
-  $('#tVib').onclick=()=>{fx.vibrate=!fx.vibrate;save();if(fx.vibrate&&navigator.vibrate)navigator.vibrate(30);render()};
   $('#editName').onclick=async()=>{await askName();render()};
   const ib=$('#doInstall');if(ib)ib.onclick=async()=>{installEvt.prompt();await installEvt.userChoice.catch(()=>{});installEvt=null;render()};
 }

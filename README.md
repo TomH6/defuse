@@ -8,7 +8,6 @@ Play: https://tomh6.github.io/defuse
 - English / Hebrew (same daily bomb in both)
 - Daily leaderboard + private friend groups (join by link)
 - WhatsApp challenge links with head-to-head results
-- Optional sound and vibration
 - Installable (PWA), works offline
 
 Plain HTML/JS, no build step. Hosted on GitHub Pages. Leaderboard uses the Trivia Deck Firebase Realtime Database under `/defuse` — rules in `database.rules.json` (paste the whole file into Firebase → Realtime Database → Rules).
