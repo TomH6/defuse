@@ -239,8 +239,8 @@ function finish(won,reason){
 }
 function share(){
   const txt=G.phase==='won'
-    ?`💣 DEFUSE #${G.num}\n✂️ Defused in ${fmt(G.used)} 🟢`
-    :`💣 DEFUSE #${G.num}\n💥 BOOM${G.reason==='time'?' (out of time)':''} 🔴`;
+    ?`💣 DEFUSE #${G.num}\n✂️ Defused in ${fmt(G.used)} 🟢\n\n▶ Play: https://tomh6.github.io/defuse`
+    :`💣 DEFUSE #${G.num}\n💥 BOOM${G.reason==='time'?' (out of time)':''} 🔴\n\n▶ Play: https://tomh6.github.io/defuse`;
   const done=()=>{$('#toast').textContent='Copied — paste it in WhatsApp!'};
   try{navigator.clipboard.writeText(txt).then(done,()=>{$('#toast').textContent='Couldn’t copy — long-press to copy instead.'})}catch(e){$('#toast').textContent='Couldn’t copy here.'}
 }
