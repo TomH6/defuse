@@ -312,7 +312,6 @@ function renderGame(){
       <div class="explain">${G.rule==='oneTrue'?t('whyTrue',chip(odd),chip(G.answer)):t('whyLie',chip(odd),chip(G.answer))}</div>
       ${daily&&st?`<div class="stats"><div><b>${st.played}</b>${t('played')}</div><div><b>${st.wins}</b>${t('wins')}</div><div><b>${st.streak}</b>${t('streak')}</div><div><b>${st.best}</b>${t('best')}</div></div>`:''}
       ${daily?`<a class="btn wa" id="waBtn" href="${waLink(shareText())}" target="_blank" rel="noopener">${waIcon()} ${t('shareWA')}</a>
-        <button class="btn sec" id="shareBtn">${t('copy')}</button>
         ${needPost?`<button class="btn go" id="postBtn">🏆 ${t('post')}</button>`:''}
         <div class="mini" id="mini"><div class="muted">${t('boardLoading')}</div></div>
         <div class="legend">${t('tomorrow')}</div>`:''}
@@ -335,7 +334,6 @@ function bindGame(){
   document.querySelectorAll('.wire').forEach(el=>el.onclick=()=>{const i=+el.dataset.i;if(G.phase==='playing'&&G.sel===i)cut();else select(i)});
   document.querySelectorAll('.tag').forEach(el=>el.onclick=()=>select(+el.dataset.i));
   const c=$('#cutBtn');if(c)c.onclick=cut;
-  const s=$('#shareBtn');if(s)s.onclick=()=>copyText(shareText());
   const p=$('#practiceBtn');if(p)p.onclick=()=>newGame('practice');
   const d=$('#dailyBtn');if(d)d.onclick=()=>newGame('daily');
   const pb=$('#postBtn');if(pb)pb.onclick=async()=>{const n=await askName();if(!n)return;await tryPost();render();fillMini();if(G.posted)toast(t('posted'))};

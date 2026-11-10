@@ -1,6 +1,6 @@
 // Network-first for the app's own files (so updates show right away), cache fallback for offline.
-const CACHE='defuse-v3';
-const SHELL=['./','index.html','style.css?v=3','js/app.js?v=3','js/puzzle.js','js/i18n.js','js/net.js','js/config.js','manifest.json','icons/icon-192.png'];
+const CACHE='defuse-v4';
+const SHELL=['./','index.html','style.css?v=4','js/app.js?v=4','js/puzzle.js','js/i18n.js','js/net.js','js/config.js','manifest.json','icons/icon-192.png'];
 self.addEventListener('install',e=>{e.waitUntil(caches.open(CACHE).then(c=>c.addAll(SHELL)).then(()=>self.skipWaiting()))});
 self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim()))});
 self.addEventListener('fetch',e=>{
