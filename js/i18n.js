@@ -105,6 +105,10 @@ export function stmtText(tg,chip){
       case'cool':return`החוט הבטוח בצבע קר.`;
       case'lies':return`הפתק ${chip(c)} משקר.`;
       case'truth':return`הפתק ${chip(c)} אומר אמת.`;
+      case'between':return`החוט הבטוח נמצא איפשהו בין החוט ${chip(c)} לחוט ${chip(tg.d)}.`;
+      case'twoAway':return`החוט הבטוח נמצא בדיוק שני מקומות מהחוט ${chip(c)}.`;
+      case'sameTemp':return`החוט הבטוח חם/קר בדיוק כמו החוט ${chip(c)}.`;
+      case'xor':return`בדיוק אחד מהפתקים ${chip(c)} ו${chip(tg.d)} משקר.`;
     }
   }
   switch(tg.type){
@@ -119,5 +123,9 @@ export function stmtText(tg,chip){
     case'cool':return`The safe wire is a cool color.`;
     case'lies':return`The ${chip(c)} tag is lying.`;
     case'truth':return`The ${chip(c)} tag is telling the truth.`;
+    case'between':return`The safe wire is somewhere between ${chip(c)} and ${chip(tg.d)}.`;
+    case'twoAway':return`The safe wire is exactly two places away from ${chip(c)}.`;
+    case'sameTemp':return`The safe wire is the same temperature (warm/cool) as ${chip(c)}.`;
+    case'xor':return`Exactly one of the ${chip(c)} and ${chip(tg.d)} tags is lying.`;
   }
 }

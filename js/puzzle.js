@@ -27,6 +27,10 @@ function evalStmt(t,s,truth,wires,n){
     case'end':return s===0||s===n-1; case'notEnd':return s!==0&&s!==n-1;
     case'warm':return!!wires[s].warm; case'cool':return!wires[s].warm;
     case'lies':return!truth(t.c); case'truth':return truth(t.c);
+    case'between':return s>t.c&&s<t.d;
+    case'twoAway':return Math.abs(s-t.c)===2;
+    case'sameTemp':return!!wires[s].warm===!!wires[t.c].warm;
+    case'xor':return truth(t.c)!==truth(t.d);
   }
 }
 export function solve(p){
@@ -40,11 +44,49 @@ export function solve(p){
   }
   return worlds;
 }
-export function makePuzzle(seed,n=4){
-  const rng=mulberry32(hashStr(seed));
+// From this date on, "only one tag is lying" bombs use only indirect clues (no "X is safe"),
+// so they're about as tricky as "only one tag tells the truth" bombs.
+export const HARD_LIE_FROM='2026-11-11';
+const HARD=[['not',.5],['next',1.5],['left',1],['right',1],['end',.7],['notEnd',.7],['warm',.7],['cool',.7],
+  ['lies',2],['truth',2],['between',2],['twoAway',2],['sameTemp',1.5],['xor',2.5]];
+const HTOT=HARD.reduce((a,b)=>a+b[1],0);
+function pick2(rng,n,i){const o=[];for(let k=0;k<n;k++)if(k!==i)o.push(k);
+  const a=o.splice(Math.floor(rng()*o.length),1)[0],b=o[Math.floor(rng()*o.length)];return a<b?[a,b]:[b,a]}
+function hardStmt(rng,n,i){
+  let r=rng()*HTOT,type='lies';
+  for(const [k,w] of HARD){if((r-=w)<0){type=k;break}}
+  let c=null,d=null;
+  if(type==='not'||type==='next'||type==='twoAway'||type==='sameTemp')c=Math.floor(rng()*n);
+  if(type==='left')c=1+Math.floor(rng()*(n-1));
+  if(type==='right')c=Math.floor(rng()*(n-1));
+  if(type==='lies'||type==='truth'){c=Math.floor(rng()*(n-1));if(c>=i)c++}
+  if(type==='between'){c=Math.floor(rng()*(n-2));d=c+2+Math.floor(rng()*(n-c-2))}
+  if(type==='xor')[c,d]=pick2(rng,n,i);
+  return{type,c,d};
+}
+function hardDay(seed){const m=/(\d{4}-\d{2}-\d{2})$/.exec(seed);return m?m[1]>=HARD_LIE_FROM:true}
+const OBSCURE=new Set(['between','twoAway','sameTemp','xor']);
+function makeHardLie(rng,n){
   for(let tries=0;tries<50000;tries++){
     const wires=shuffle(COLORS.slice(),rng).slice(0,n);
-    const rule=rng()<.5?'oneTrue':'oneLie';
+    const tags=[];for(let i=0;i<n;i++)tags.push(hardStmt(rng,n,i));
+    if(new Set(tags.map(t=>t.type+t.c+'-'+t.d)).size<n)continue;
+    if(!tags.some(t=>OBSCURE.has(t.type)))continue;
+    if(!tags.some(t=>t.type==='lies'||t.type==='truth'||t.type==='xor'))continue;
+    const p={wires,rule:'oneLie',tags};
+    const w=solve(p);
+    if(w.length===1)return{...p,answer:w[0].s,mask:w[0].m,n};
+  }
+}
+
+export function makePuzzle(seed,n=4){
+  const rng=mulberry32(hashStr(seed));
+  // new days: pick the rule once (50/50), so both kinds come up equally often
+  const hard=hardDay(seed),dayRule=hard?(rng()<.5?'oneTrue':'oneLie'):null;
+  if(dayRule==='oneLie')return makeHardLie(rng,n);
+  for(let tries=0;tries<50000;tries++){
+    const wires=shuffle(COLORS.slice(),rng).slice(0,n);
+    const r0=rng()<.5?'oneTrue':'oneLie',rule=dayRule||r0;
     const tags=[];for(let i=0;i<n;i++)tags.push(randStmt(rng,n,i));
     if(new Set(tags.map(t=>t.type+t.c)).size<n)continue;
     const hasRef=tags.some(t=>t.type==='lies'||t.type==='truth');

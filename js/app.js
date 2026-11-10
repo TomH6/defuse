@@ -294,7 +294,7 @@ function renderGame(){
   const tags=G.tags.map((tg,i)=>{const tr=(G.mask>>i)&1;return`<div class="tag ${!over&&G.sel===i?'sel':''}" data-i="${i}" style="border-inline-start-color:${G.wires[i].h}">
       <div><div class="who">${t('tagLbl',i+1,colorName(G.wires[i].n))}</div><div class="stmt">${LANG==='he'?stmtText(tg,chip):`“${stmtText(tg,chip)}”`}</div></div>
       ${over?`<span class="verdict ${tr?'v-true':'v-lie'}">${tr?t('vTrue'):t('vLie')}</span>`:''}</div>`}).join('');
-  const usesTemp=G.tags.some(x=>x.type==='warm'||x.type==='cool');
+  const usesTemp=G.tags.some(x=>x.type==='warm'||x.type==='cool'||x.type==='sameTemp');
   let bottom='';
   if(!over){
     const nm=G.sel===null?'':(LANG==='he'?wireName(G.sel):wireName(G.sel).toUpperCase());
