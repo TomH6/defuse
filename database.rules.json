@@ -23,10 +23,42 @@
         "$date": {
           "scores": {
             ".read": true,
-            ".indexOn": ["k"],
+            ".indexOn": [
+              "k"
+            ],
             "$uid": {
               ".write": "auth != null && auth.uid === $uid && !data.exists()",
               ".validate": "newData.hasChildren(['name','t','won','k']) && newData.child('name').isString() && newData.child('name').val().length <= 20 && newData.child('t').isNumber() && newData.child('t').val() >= 1000 && newData.child('t').val() <= 121000"
+            }
+          }
+        }
+      },
+      "groups": {
+        "$gid": {
+          ".read": true,
+          "info": {
+            ".write": "auth != null && !data.exists()"
+          },
+          "members": {
+            "$uid": {
+              ".write": "auth != null && auth.uid === $uid",
+              ".validate": "!newData.exists() || (newData.isString() && newData.val().length <= 20)"
+            }
+          }
+        }
+      }
+    },
+    "onesip": {
+      "days": {
+        "$date": {
+          "scores": {
+            ".read": true,
+            ".indexOn": [
+              "k"
+            ],
+            "$uid": {
+              ".write": "auth != null && auth.uid === $uid && !data.exists()",
+              ".validate": "newData.hasChildren(['name','t','won','k']) && newData.child('name').isString() && newData.child('name').val().length <= 20 && newData.child('t').isNumber() && newData.child('t').val() >= 1000 && newData.child('t').val() <= 3600000"
             }
           }
         }
