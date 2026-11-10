@@ -228,6 +228,8 @@ function bindHeader(){
 function render(){
   document.title=LANG==='he'?'DEFUSE — פצצה יומית':'DEFUSE — daily bomb puzzle';
   const app=$('#app');
+  document.body.classList.toggle('focus',view==='game'&&(G.phase==='playing'||G.phase==='cutting'));
+  document.body.classList.toggle('over',view==='game'&&(G.phase==='won'||G.phase==='lost'));
   if(view==='board')app.innerHTML=header()+renderBoard();
   else if(view==='settings')app.innerHTML=header()+renderSettings();
   else app.innerHTML=header()+renderGame();
